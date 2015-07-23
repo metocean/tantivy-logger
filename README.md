@@ -22,7 +22,7 @@ Client Process C
 * Python
 
 ## Performance: 
-100,000 + log entry inserts per/second.
+100,000 + log entries inserts per/second.
 
 ## API for talking to server:
 
