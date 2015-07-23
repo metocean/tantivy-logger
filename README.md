@@ -28,13 +28,14 @@ API for talking to server:
 
 * Saving a log entry:
 
-[ SOL ][ length ][ EOL ][ log entry ]
-[ 1 char ][ variable chars ][ 1 char ][ variable chars ]
+| SOL | length | EOL | log entry |
 
-[ 1 char ] = start of length marker, currently is the ascii char '~'
-[ variable chars ] = length of the preceding log entry. The length is in ascii enodced. 
-[ 1 char ] = end of length marker, currently is the ascii char ';'
-[ variable chars ] = the actual log entry. If your log entry does not have a '\n' at the end of it the server will automatically insert one. This will become a configurable option.
+| 1 char | variable chars | 1 char | variable bytes |
+
+SOL = start of length marker, currently is the ascii char '~'
+length = length of the preceding log entry. The length is in ascii enodced. 
+EOL = end of length marker, currently is the ascii char ';'
+log entry = the actual log entry. If your log entry does not have a '\n' at the end of it the server will automatically insert one. This will become a configurable option.
 
 exmaples:
 "~9;some error"
