@@ -10,7 +10,7 @@ Project description:
 This program contains a server and clients of differing languages for application logging.
 
 Client Process A  
-Client Process B -> unix socket -> tantivy logging server -> log_file.txt 
+Client Process B -> unix socket -> tantivy logging server -> log_file
 Client Process C  
 
 The server is:
