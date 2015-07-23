@@ -1,11 +1,11 @@
 # tantivy-logger
 A single threaded poll based logging server (using libuv) as well as mixed language clients.
 
-Project status: Aplah 0.1
+## Project status: Aplah 0.1
 
 This project is currently just a prototype, usually I'd keep something closed until its good enought, but making work pay for my repos could be troublesome.
 
-Project description:
+## Project description:
 
 This program contains a server and clients of differing languages for application logging.
 
@@ -13,20 +13,20 @@ Client Process A
 Client Process B -> unix socket -> tantivy logging server -> log_file.txt  
 Client Process C  
 
-The server is:
+## The server is:
 * Written in C.
 * Connections via unix-socket.
 * Single threaded poll based via use of the awesome libuv library.
 
-Clients currently supported are:
+## Clients currently supported are:
 * Python
 
-Performance: 
+## Performance: 
 100,000 + log entry inserts per/second.
 
-API for talking to server:
+## API for talking to server:
 
-* Saving a log entry:
+### Saving a log entry:
 
 | SOL | length | EOL | log entry |
 
@@ -41,7 +41,7 @@ exmaples:
 "~9;some error"
 "~13;beer is great"
 
-TODO:
+## TODO:
 * add command line args, and config files.
 * add automake or something similar.
 * add configuration / init mode, so when clients first connects they can change options on how the logs get save.
