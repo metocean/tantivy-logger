@@ -3,14 +3,14 @@ A single threaded poll based logging server (using libuv) as well as mixed langu
 
 Project status: Aplah 0.1
 
-This project is currently just a prototype, usally I'd keep something closed until its good enought, but making work pay for my repos could be troublesome.
+This project is currently just a prototype, usually I'd keep something closed until its good enought, but making work pay for my repos could be troublesome.
 
 Project description:
 
-This program contains a logger server and clients of other langauges.
+This program contains a server and clients of differing languages for application logging.
 
 Client Process.A >
-Client Process.B > unix socket > tantivy logger server > log_file.txt
+Client Process.B > unix socket > tantivy logging server > log_file.txt
 Client Process.C >
 
 The server is:
@@ -22,7 +22,7 @@ Clients currently supported are:
 * Python
 
 Performance: 
-100,000 + log inserts per/second.
+100,000 + log entry inserts per/second.
 
 API for talking to server:
 
