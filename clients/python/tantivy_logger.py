@@ -19,7 +19,7 @@ class TantivyLogger(object):
         self._sock.send(msg)
 
 def worker(terminate_event, i):
-    logger = TantivyLogger('/tmp/test.sock')
+    logger = TantivyLogger('/tmp/tantivy.logger.unix.sock')
     pid = os.getpid()
     print 'enter %s %s' % (i, pid)
 

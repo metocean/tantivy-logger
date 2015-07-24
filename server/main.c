@@ -3,14 +3,19 @@
 #include <string.h>
 #include <uv.h>
 
+#include "args_parser.h"
 #include "log_parser.h"
 
-uv_loop_t *loop;
-uv_pipe_t file_pipe;
-uv_pipe_t socket_pipe;
+struct {
+	uv_loop_t *loop;
+	uv_pipe_t log_file_pipe;
+	uv_pipe_t unix_sock_pipe;
 
-const char * unix_socker_path = "/tmp/test.sock";
-const char * log_filename = "/tmp/test.log";
+	char *unix_socket_path;
+	char *log_file_path;
+	bool auto_append_newline;
+	
+} g_app;
 
 void after_write(uv_write_t *req, int status) {
 	
@@ -31,14 +36,13 @@ void on_log_entry_found(char *log_entry, int length) {
 	wrbuf = uv_buf_init(log_entry, length);
 	req->data = log_entry;
 	
-	uv_write(req, (uv_stream_t*)&file_pipe, &wrbuf, 1, after_write);
+	uv_write(req, (uv_stream_t*)&g_app.log_file_pipe, &wrbuf, 1, after_write);
 }
 
 static void on_close(uv_handle_t* client) {
 	
 	if (client->data)
 		free_log_parser_context((log_parser_context_t *)client->data);
-		//free(client->data);
 	free(client);
 }
 
@@ -76,7 +80,7 @@ void on_socket_connection(uv_stream_t *server, int status) {
 	}
 
 	client = (uv_pipe_t*) malloc(sizeof(uv_pipe_t));
-	client->data = create_log_parser_context();
+	client->data = create_log_parser_context(g_app.auto_append_newline);
 	
 	uv_pipe_init(server->loop, client, 0);
 	
@@ -89,46 +93,53 @@ void on_socket_connection(uv_stream_t *server, int status) {
 	uv_read_start((uv_stream_t*) client, alloc_buffer, after_read);
 }
 
-void remove_sock(int sig) {
+void kill_server(int sig) {
     uv_fs_t req;
-    uv_fs_unlink(loop, &req, unix_socker_path, NULL);
-    exit(0);
+    uv_fs_unlink(g_app.loop, &req, g_app.unix_socket_path, NULL);
+    exit(EXIT_SUCCESS);
 }
 
-int main() {
+int main(int argc, char **argv) {
 	
-	loop = uv_default_loop();
-	
-	uv_pipe_init(loop, &socket_pipe, 0);
-
-	signal(SIGINT, remove_sock);
-
 	int r;
-	if ((r = uv_pipe_bind(&socket_pipe, unix_socker_path))) {
+	int log_file_fd;
+	uv_fs_t file_request;
+	
+	if ((r = parse_args(argc, argv, 
+			 &g_app.unix_socket_path, 
+			 &g_app.log_file_path, 
+			 &g_app.auto_append_newline)))
+		return r == 1 ? (EXIT_SUCCESS) : r;
+	
+	g_app.loop = uv_default_loop();
+	
+	uv_pipe_init(g_app.loop, &g_app.unix_sock_pipe, 0);
+
+	signal(SIGINT, kill_server);
+	
+	if ((r = uv_pipe_bind(&g_app.unix_sock_pipe, g_app.unix_socket_path))) {
 		fprintf(stderr, "Bind error %s\n", uv_err_name(r));
 		return 1;
 	}
-	if ((r = uv_listen((uv_stream_t*) &socket_pipe, 128, on_socket_connection))) {
+	if ((r = uv_listen((uv_stream_t*) &g_app.unix_sock_pipe, 128, on_socket_connection))) {
 		fprintf(stderr, "Listen error %s\n", uv_err_name(r));
 		return 2;
 	}
 	
-	int file_discriptor;
-	uv_fs_t file_request;
 	
-	file_discriptor = uv_fs_open(loop, 
+	log_file_fd = uv_fs_open(g_app.loop, 
 				 &file_request, 
-				 log_filename, 
+				 g_app.log_file_path, 
 				 O_CREAT | O_RDWR, 
 				 0644, 
 				 NULL);
-
-	uv_pipe_init(loop, &file_pipe, 0);
 	
-	if ((r = uv_pipe_open(&file_pipe, file_discriptor))){
+	uv_pipe_init(g_app.loop, &g_app.log_file_pipe, 0);
+	
+	if ((r = uv_pipe_open(&g_app.log_file_pipe, log_file_fd))){
 		fprintf(stderr, "Listen error %s\n", uv_err_name(r));
-		return 2;
+		return 3;
 	}
-    
-	return uv_run(loop, UV_RUN_DEFAULT);
+	
+	return uv_run(g_app.loop, UV_RUN_DEFAULT);
 }

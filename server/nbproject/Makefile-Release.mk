@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/_ext/954258375/arg_parser.o \
 	${OBJECTDIR}/_ext/954258375/log_parser.o \
 	${OBJECTDIR}/main.o
 
@@ -62,6 +63,11 @@ LDLIBSOPTIONS=
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tantivy-logger: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tantivy-logger ${OBJECTFILES} ${LDLIBSOPTIONS}
+
+${OBJECTDIR}/_ext/954258375/arg_parser.o: /home/gregc/NetBeansProjects/tantivy-logger/arg_parser.c 
+	${MKDIR} -p ${OBJECTDIR}/_ext/954258375
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/_ext/954258375/arg_parser.o /home/gregc/NetBeansProjects/tantivy-logger/arg_parser.c
 
 ${OBJECTDIR}/_ext/954258375/log_parser.o: /home/gregc/NetBeansProjects/tantivy-logger/log_parser.c 
 	${MKDIR} -p ${OBJECTDIR}/_ext/954258375
