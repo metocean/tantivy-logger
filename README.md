@@ -42,15 +42,19 @@ log entry = the actual log entry. If your log entry does not have a '\n' at the 
 "~13;beer is great"  
 
 ## Usage:
-1) start server "./tantivy-logger --unix-sock /tmp/my.sock --log-file /tmp/my.log --newline yes"
-2) use client to insert log entry, python example:  
+1) start server  
+"./tantivy-logger --unix-sock /tmp/my.sock --log-file /tmp/my.log --newline yes"  
+  
+2) use client to insert log entry  
+  
+python example: 
   
 import socket;  
   
 sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)  
 sock.connect('/tmp/my.sock')  
 sock.send('~13;beer is great')  
-
+  
 ## TODO:
 * add config files.
 * add autoconfig or something similar.
