@@ -33,7 +33,7 @@ Client Process C
 | 1 char | variable chars | 1 char | variable bytes |
 
 SOL = start of length marker, currently is the ascii char '~'  
-length = length of the preceding log entry. The length is in ascii enodced.  
+length = length of the preceding log entry. The length is a string / ascii encoded.  
 EOL = end of length marker, currently is the ascii char ';'  
 log entry = the actual log entry. If your log entry does not have a '\n' at the end of it the server will automatically insert one. This will become a configurable option.  
 
